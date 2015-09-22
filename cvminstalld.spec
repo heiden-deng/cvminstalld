@@ -2,7 +2,6 @@ Name: cvminstalld
 Version: 1.0.0
 Release: 1
 Summary: Sugon cvm install service server
-URL: http://www.sugon.com/svn/cdn/trunk/cvminstalld/Revision_SVN_REVISION
 Group: Sugon/Common
 License: Commercial
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
