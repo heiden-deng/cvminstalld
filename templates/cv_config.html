@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>cvm安装服务-配置信息</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  </head>
+  <body>请设置安装配置信息:
+	  <br/>
+	  <br/>
+	  <b>说明：设置CVM虚拟机镜像存储服务器时，对于nfs不需要设置用户名和密码!
+		  <br/>
+		  路径填写示例：
+	  </b>
+	  <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;  nfs ->  192.168.1.100:/nfs/vhd	  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;  cifs->  //192.168.1.100/vhd             <br>
+    <form action="/cv_install" method="post">
+      <select name="store_server_type">
+	<option value ="nfs">NFS</option>
+	<option value ="cifs">CIFS</option>
+      </select> &nbsp;&nbsp;
+      路径:  <input type="text" name="vhd_path" /></br>
+      用户名： <input type="text" name="user" />
+      密码： <input type="password" name="passwd" /><br>
+      <textarea rows="45" cols="200" name="cv_config">{{ cv_config }}</textarea><br>
+      <input type="submit" value="开始安装">
+    </form>
+  </body>
+</html>

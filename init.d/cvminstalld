@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# cvminstalld	This shell script takes care of starting and stopping
+#		cvm install server (NTPv4 daemon).
+#
+# chkconfig: - 99 99
+# description: cvminstalld is the cvm install server daemon. \
+# The cvm install server  is used to configuration and install \
+# vcell & cvm from browser 
+
+### BEGIN INIT INFO
+# Provides: cvminstalld
+# Required-Start: $network $local_fs $remote_fs
+# Required-Stop: $network $local_fs $remote_fs
+# Should-Start: $syslog $named ntpdate
+# Should-Stop: $syslog $named
+# Short-Description: start and stop cvminstalld
+# Description: cvminstalld is the cvm install server daemon.
+#              The cvm install server  is used to configuration and install
+#              vcell & cvm from browser
+#              
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+prog=cvminstalld
+lockfile=/var/lock/subsys/$prog
+
+start() {
+	[ "$EUID" != "0" ] && exit 4
+	[ -x /usr/sbin/cvminstalld ] || exit 5
+        
+	cvmpid=`ps aux | grep "python /usr/sbin/cvminstalld" | grep -v "grep"`
+        if [ $? -eq 0 ];then
+           echo  "$prog has started"
+           return 0
+        fi
+        # Start daemons.
+        echo -n $"Starting $prog: "
+        $prog &
+	RETVAL=$?
+        echo
+	[ $RETVAL -eq 0 ] && touch $lockfile
+	return $RETVAL
+}
+
+stop() {
+	[ "$EUID" != "0" ] && exit 4
+        echo -n $"Shutting down $prog: "
+	pid=`ps aux | grep "python /usr/sbin/cvminstalld" | grep -v "grep" | awk '{print $2}'`
+        kill -9 $pid
+	RETVAL=$?
+        echo
+	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+	status $prog
+	;;
+  restart)
+	stop
+	start
+	;;
+  reload)
+	exit 3
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart}"
+	exit 2
+esac
