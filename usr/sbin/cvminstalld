@@ -62,11 +62,8 @@ class InstallHandler(tornado.web.RequestHandler):
                 mount_status = vcell_iutils.execWithCapture("mount",["-t", "nfs", st_path, MOUNT_POINT])
             else:
                 mount_status = vcell_iutils.execWithCapture("mount",["-t", "cifs", "-o", "username=%s,password=%s" % (st_user,st_passwd), st_path, MOUNT_POINT])
-	    if not os.path.exists("%s/cloudview1.8.vhd" % (MOUNT_POINT,)) or \
-	          not os.path.exists("%s/vrouter_template.vhd" % (MOUNT_POINT,)) or \
-		  not os.path.exists("%s/vrouter_template_first.vhd" % (MOUNT_POINT,)) or  \
-		  not os.path.exists("%s/rpm.iso" % (MOUNT_POINT,)):
-               self.render("error.html",error_info = u"指定的存储路径下必须包含如下文件：cloudview1.8.vhd,rpm.iso,vrouter_template.vhd,vrouter_template_first.vhd")
+	    if  not os.path.exists("%s/rpm.iso" % (MOUNT_POINT,)):
+               self.render("error.html",error_info = u"指定的存储路径下必须包含如下文件：rpm.iso")
 	       return
             mount_status = "挂载成功"
 	    cv_config = self.get_argument("cv_config")
@@ -84,26 +81,13 @@ class InstallHandler(tornado.web.RequestHandler):
 	    cf_fp.close()
 
             create_link = u"删除 %s 下的文件或者链接" % (vhd_dir,)
-            file_path = "%s/cloudview1.8.vhd" % (vhd_dir,)
-	    if os.path.exists(file_path):
-                os.remove(file_path)
-
-            file_path = "%s/vrouter_template.vhd" % (vhd_dir,)
-	    if os.path.exists(file_path):
-                os.remove(file_path)
-
-	    file_path = "%s/vrouter_template_first.vhd" % (vhd_dir,)
-	    if os.path.exists(file_path):
-                os.remove(file_path)
 
 	    file_path = "%s/rpm.iso" % (vhd_dir,)
 	    if os.path.exists(file_path):
                os.remove(file_path)
 
             create_link = create_link + u"<br>建立文件链接"
-	    os.symlink("%s/cloudview1.8.vhd" % (MOUNT_POINT,), "%s/cloudview1.8.vhd" % (vhd_dir,))
-	    os.symlink("%s/vrouter_template.vhd" % (MOUNT_POINT,), "%s/vrouter_template.vhd" % (vhd_dir,))
-	    os.symlink("%s/vrouter_template_first.vhd" % (MOUNT_POINT,), "%s/vrouter_template_first.vhd" % (vhd_dir,))
+	    
 	    os.symlink("%s/rpm.iso" % (MOUNT_POINT,), "%s/rpm.iso" % (vhd_dir,))
 
 	    ret = vcell_iutils.execWithRedirect("cv", ["setup", "vcell"], stdout=vcell_install_status_file)
