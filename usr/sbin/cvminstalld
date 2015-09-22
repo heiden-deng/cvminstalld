@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 #
-#  Author: heiden deng (dengjq@sugon.com)
+#  Author: heiden deng
 #  简单的http服务器，控制完成cvm服务的安装
 #
 import tornado.ioloop
